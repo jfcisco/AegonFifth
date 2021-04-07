@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer;
+using FlyingDutchmanAirlines.DatabaseLayer.Models;
+using FlyingDutchmanAirlines.Exceptions;
 using FlyingDutchmanAirlines.RepositoryLayer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.InMemory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
@@ -14,14 +15,19 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
         private CustomerRepository _repository;
 
         [TestInitialize]
-        public void TestInitialize()
+        public async Task TestInitialize()
         {
             DbContextOptions<FlyingDutchmanAirlinesContext> dbContextOptions = new DbContextOptionsBuilder<FlyingDutchmanAirlinesContext>()
                  .UseInMemoryDatabase("FlyingDutchman").Options;
                 
             _context = new FlyingDutchmanAirlinesContext(dbContextOptions);
+
+            Customer testCustomer = new Customer("Linus Torvalds");
+            _context.Add(testCustomer);
+            await _context.SaveChangesAsync();
+            
             _repository = new CustomerRepository(_context);
-            Assert.IsNotNull(_repository);
+            Assert.IsNotNull(_repository);           
         }
 
         [TestMethod]
@@ -67,5 +73,30 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
             bool result = await repository.CreateCustomer("James");
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public async Task GetCustomerByName_Success()
+        {
+            Customer customer = await _repository.GetCustomerByName("Linus Torvalds");
+            Assert.IsNotNull(customer);
+
+            Customer testCustomer = new Customer("Linus Torvalds");
+            Assert.AreEqual(customer.Name, testCustomer.Name);
+        }
+
+        [TestMethod]
+        [DataRow("")]
+        [DataRow(null)]
+        [DataRow("#")]
+        [DataRow("$")]
+        [DataRow("%")]
+        [DataRow("&")]
+        [DataRow("*")]
+        [ExpectedException(typeof(CustomerNotFoundException))]
+        public async Task GetCustomerByName_Failure(string name)
+        {
+            await _repository.GetCustomerByName(name);
+        }
+
     }
 }
