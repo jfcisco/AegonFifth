@@ -2,6 +2,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer;
 using FlyingDutchmanAirlines.DatabaseLayer.Models;
+using FlyingDutchmanAirlines.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlyingDutchmanAirlines.RepositoryLayer
 {
@@ -42,6 +44,14 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
         {
             char[] forbiddenCharacters = { '!', '@', '#', '$', '%', '&', '*' };
             return string.IsNullOrEmpty(name) || name.Any(x => forbiddenCharacters.Contains(x));
+        }
+
+        public async Task<Customer> GetCustomerByName(string name)
+        {
+            if (IsInvalidCustomerName(name)) { throw new CustomerNotFoundException(); }
+
+            return await _context.Customers.FirstOrDefaultAsync(c => c.Name == name) 
+                ?? throw new CustomerNotFoundException();
         }
     }
 }
