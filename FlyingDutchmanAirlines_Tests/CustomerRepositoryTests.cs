@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer;
 using FlyingDutchmanAirlines.DatabaseLayer.Models;
@@ -80,8 +81,8 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
             Customer customer = await _repository.GetCustomerByName("Linus Torvalds");
             Assert.IsNotNull(customer);
 
-            Customer testCustomer = new Customer("Linus Torvalds");
-            Assert.AreEqual(customer.Name, testCustomer.Name);
+            Customer dbCustomer = _context.Customers.First();
+            Assert.AreEqual<Customer>(dbCustomer, customer);
         }
 
         [TestMethod]
