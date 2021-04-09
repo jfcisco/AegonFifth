@@ -17,5 +17,17 @@ namespace FlyingDutchmanAirlines.DatabaseLayer.Models
             Name = name;
         }
 
+        public static bool operator == (Customer x, Customer y)
+        {
+            CustomerEqualityComparer comparer = new CustomerEqualityComparer();
+            return comparer.Equals(x, y);
+        }
+
+        public static bool operator != (Customer x, Customer y) => !(x == y);
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
