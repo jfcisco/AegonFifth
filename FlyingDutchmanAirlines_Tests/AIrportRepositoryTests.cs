@@ -22,7 +22,12 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
 
             _context = new FlyingDutchmanAirlinesContext_Stub(dbContextOptions);
 
-            Airport testAirport = new Airport();
+            Airport testAirport = new Airport()
+            {
+                AirportId = 1,
+                City = "Manila",
+                Iata = "MNL"
+            };
             _context.Airports.Add(testAirport);
             await _context.SaveChangesAsync();
 
@@ -39,17 +44,12 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
         }
 
         [TestMethod]
+        [DataRow(-1)]
+        [DataRow(2)]
         [ExpectedException(typeof(AirportNotFoundException))]
-        public async Task GetAirportByID_Failure_InvalidArgument()
+        public async Task GetAirportByID_Failure(int testId)
         {
-            await _repository.GetAirportByID(-1);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(AirportNotFoundException))]
-        public async Task GetAirportByID_Failure_AirportNotExisting()
-        {
-            await _repository.GetAirportByID(2);
+            await _repository.GetAirportByID(testId);
         }
     }
     
