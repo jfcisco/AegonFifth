@@ -20,7 +20,7 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
         {
             if (id < 0) { throw new AirportNotFoundException(); }
 
-            return await _context.Airports.FirstOrDefaultAsync<Airport>()
+            return await _context.Airports.FirstOrDefaultAsync(a => a.AirportId == id)
                 ?? throw new AirportNotFoundException();
         }
     }
