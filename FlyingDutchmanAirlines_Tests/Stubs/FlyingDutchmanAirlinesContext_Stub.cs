@@ -27,6 +27,13 @@ namespace FlyingDutchmanAirlines_Tests.Stubs
                 throw new Exception("Database Error!");
             }
 
+            IEnumerable<Airport> airports = pendingChanges.Select(e => e.Entity).OfType<Airport>();
+
+            if (!airports.Any())
+            {
+                throw new Exception("Database Error!");
+            }
+
             await base.SaveChangesAsync(cancellationToken);
             return 1;
         }
