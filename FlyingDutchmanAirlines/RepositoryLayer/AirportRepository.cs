@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer;
 using FlyingDutchmanAirlines.DatabaseLayer.Models;
 using FlyingDutchmanAirlines.Exceptions;
+using System;
 
 namespace FlyingDutchmanAirlines.RepositoryLayer
 {
@@ -18,7 +19,11 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
 
         public async Task<Airport> GetAirportByID(int id)
         {
-            if (id < 0) { throw new AirportNotFoundException(); }
+            if (id < 0) 
+            {
+                Console.WriteLine($"Argument Exception in GetAirportByID! Airport ID = {id}"); 
+                throw new ArgumentException("Invalid argument provided"); 
+            }
 
             return await _context.Airports.FirstOrDefaultAsync(a => a.AirportId == id)
                 ?? throw new AirportNotFoundException();
