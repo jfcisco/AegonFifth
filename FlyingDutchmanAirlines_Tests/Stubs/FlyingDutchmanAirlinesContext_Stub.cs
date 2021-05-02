@@ -27,12 +27,19 @@ namespace FlyingDutchmanAirlines_Tests.Stubs
                 throw new Exception("Database Error!");
             }
 
-            IEnumerable<Airport> airports = pendingChanges.Select(e => e.Entity).OfType<Airport>();
+            // IEnumerable<Airport> airports = pendingChanges.Select(e => e.Entity).OfType<Airport>();
 
-            if (airports.Any(a => a.AirportId == 10))
-            {
-                throw new Exception("Database Error!");
-            }
+            // if (airports.Any(a => a.AirportId == 10))
+            // {
+            //     throw new Exception("Database Error!");
+            // }
+
+            // IEnumerable<Flight> flights = pendingChanges.Select(e => e.Entity).OfType<Flight>();
+
+            // if (flights.Any(f => f.FlightNumber == 2))
+            // {
+            //     throw new Exception("Database Error!");
+            // }
 
             await base.SaveChangesAsync(cancellationToken);
             return 1;
