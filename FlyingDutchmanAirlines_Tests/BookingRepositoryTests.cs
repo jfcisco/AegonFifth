@@ -18,7 +18,7 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
         private BookingRepository _repository;
 
         [TestInitialize]
-        public async Task TestInitialize()
+        public void TestInitialize()
         {
             DbContextOptions<FlyingDutchmanAirlinesContext> dbContextOptions = new DbContextOptionsBuilder<FlyingDutchmanAirlinesContext>()
                  .UseInMemoryDatabase("FlyingDutchman").Options;
