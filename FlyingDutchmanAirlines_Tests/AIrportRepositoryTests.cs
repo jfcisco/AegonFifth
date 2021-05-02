@@ -111,6 +111,13 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
         {
             await _repository.GetAirportByID(4);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(AirportNotFoundException))]
+        public async Task GetAirportByID_Failure_DatabaseException()
+        {
+            await _repository.GetAirportByID(10);
+        }
     }
     
 }

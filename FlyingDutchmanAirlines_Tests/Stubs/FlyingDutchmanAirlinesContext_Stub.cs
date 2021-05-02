@@ -29,7 +29,7 @@ namespace FlyingDutchmanAirlines_Tests.Stubs
 
             IEnumerable<Airport> airports = pendingChanges.Select(e => e.Entity).OfType<Airport>();
 
-            if (!airports.Any())
+            if (airports.Any(a => a.AirportId == 10))
             {
                 throw new Exception("Database Error!");
             }
