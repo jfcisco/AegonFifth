@@ -19,7 +19,7 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
 
         public async Task<Airport> GetAirportByID(int id)
         {
-            if (id < 0) 
+            if (!id.IsPositive()) 
             {
                 Console.WriteLine($"Argument Exception in GetAirportByID! Airport ID = {id}"); 
                 throw new ArgumentException("Invalid argument provided"); 
