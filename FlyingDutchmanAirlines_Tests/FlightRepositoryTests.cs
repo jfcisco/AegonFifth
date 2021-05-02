@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer;
 using FlyingDutchmanAirlines.DatabaseLayer.Models;
+using FlyingDutchmanAirlines.Exceptions;
 using FlyingDutchmanAirlines.RepositoryLayer;
 using FlyingDutchmanAirlines_Tests.Stubs;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,22 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
         private FlightRepository _repository;
     
         [TestInitialize]
-        public void TestInitialize()
+        public async Task TestInitialize()
         {
             DbContextOptions<FlyingDutchmanAirlinesContext> dbContextOptions = new DbContextOptionsBuilder<FlyingDutchmanAirlinesContext>().UseInMemoryDatabase("FlyingDutchman").Options;
 
             _context = new FlyingDutchmanAirlinesContext_Stub(dbContextOptions);
+
+            Flight flight = new Flight
+            {
+                FlightNumber = 1,
+                Origin = 1,
+                Destination = 2
+            };
+
+             _context.Flights.Add(flight);
+             await _context.SaveChangesAsync();
+
             _repository = new FlightRepository(_context);
             Assert.IsNotNull(_repository);
         }
@@ -28,8 +40,15 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
         [TestMethod]
         public async Task FlightRepository_GetFlightByFlightNumber_Success()
         {
-            Flight flight = await _repository.GetFlightByFlightNumber(0, 0, 0);
+            Flight flight = await _repository.GetFlightByFlightNumber(1, 2, 2);
             Assert.IsNotNull(flight);
+
+            Flight dbFlight = await _context.Flights.FirstAsync(f => f.FlightNumber == 1);
+            Assert.IsNotNull(dbFlight);
+
+            Assert.AreEqual(dbFlight.FlightNumber, flight.FlightNumber);
+            Assert.AreEqual(dbFlight.Origin, flight.Origin);
+            Assert.AreEqual(dbFlight.Destination, flight.Destination);
         }
 
         [TestMethod]
@@ -44,6 +63,20 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
         public async Task FlightRepository_GetFlightByFlightNumber_Failure_InvalidDestinationAirportId()
         {
             await _repository.GetFlightByFlightNumber(0, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FlightNotFoundException))]
+        public async Task FlightRepository_GetFlightByFlightNumber_Failure_InvalidFlightNumber()
+        {
+            await _repository.GetFlightByFlightNumber(-1, 0, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FlightNotFoundException))]
+        public async Task FlightRepository_GetFlightByFlightNumber_Failure_DatabaseException()
+        {
+            await _repository.GetFlightByFlightNumber(2, 1, 2);
         }
     }
 }
