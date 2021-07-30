@@ -10,6 +10,8 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
     public class CustomerRepository
     {
         private readonly FlyingDutchmanAirlinesContext _context;
+        
+        public CustomerRepository() {}
         public CustomerRepository(FlyingDutchmanAirlinesContext _context)
         {
             this._context = _context;
@@ -46,7 +48,7 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
             return string.IsNullOrEmpty(name) || name.Any(x => forbiddenCharacters.Contains(x));
         }
 
-        public async Task<Customer> GetCustomerByName(string name)
+        public virtual async Task<Customer> GetCustomerByName(string name)
         {
             if (IsInvalidCustomerName(name)) { throw new CustomerNotFoundException(); }
 

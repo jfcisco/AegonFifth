@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer;
 using FlyingDutchmanAirlines.DatabaseLayer.Models;
@@ -9,12 +11,21 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
     public class BookingRepository
     {
         private readonly FlyingDutchmanAirlinesContext _context;
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public BookingRepository()
+        {
+            if (Assembly.GetExecutingAssembly().FullName == Assembly.GetCallingAssembly().FullName)
+            {
+                throw new Exception("This constructor should only be used for testing");
+            }
+        }
         public BookingRepository(FlyingDutchmanAirlinesContext _context)
         {
             this._context = _context;
         }
 
-        public async Task CreateBooking(int customerID, int flightNumber)
+        public virtual async Task CreateBooking(int customerID, int flightNumber)
         {
             // Validate parameters: customerID and flightNumber should never be negative.
             if (!customerID.IsPositive() || !flightNumber.IsPositive())

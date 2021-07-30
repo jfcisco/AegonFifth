@@ -1,36 +1,39 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer;
+using FlyingDutchmanAirlines.DatabaseLayer.Models;
 using FlyingDutchmanAirlines.RepositoryLayer;
 using FlyingDutchmanAirlines.ServiceLayer;
 using FlyingDutchmanAirlines_Tests.Stubs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace FlyingDutchmanAirlines_Tests.ServiceLayer
 {
     [TestClass]
     public class BookingServiceTests
     {
-        private FlyingDutchmanAirlinesContext _context;
-
         [TestInitialize]
         public void TestInitialize()
         {
-            DbContextOptions<FlyingDutchmanAirlinesContext> dbContextOptions =
-                new DbContextOptionsBuilder<FlyingDutchmanAirlinesContext>()
-                    .UseInMemoryDatabase("FlyingDutchman").Options;
-            
-            _context = new FlyingDutchmanAirlinesContext_Stub(dbContextOptions);
         }
 
         [TestMethod]
         public async Task CreateBooking_Success()
         {
-            BookingRepository repository = new(_context);
-            CustomerRepository customerRepo = new(_context);
-            BookingService service = new(repository, customerRepo);
+            Mock<BookingRepository> mockRepository = new Mock<BookingRepository>();
+            Mock<CustomerRepository> mockCustomerRepo = new();
+
+            mockRepository.Setup(repository => repository.CreateBooking(0, 0)).Returns(Task.CompletedTask);
+            mockCustomerRepo.Setup(repository => repository.GetCustomerByName("Leo Tolstoy"))
+                .Returns(Task.FromResult(new Customer("Leo Tolstoy")));
+            
+            BookingService service = new(mockRepository.Object, mockCustomerRepo.Object);
             (bool result, Exception exception) = await service.CreateBooking("Leo Tolstoy", 0);
+
+            Assert.IsTrue(result);
+            Assert.IsNull(exception);
         }
     }
 }
