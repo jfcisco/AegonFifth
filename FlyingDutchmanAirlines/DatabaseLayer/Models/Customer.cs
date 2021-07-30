@@ -17,6 +17,7 @@ namespace FlyingDutchmanAirlines.DatabaseLayer.Models
             Name = name;
         }
 
+        // TODO: Resolve warning regarding override Object.Equals();
         public static bool operator == (Customer x, Customer y)
         {
             CustomerEqualityComparer comparer = new CustomerEqualityComparer();
