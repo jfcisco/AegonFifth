@@ -17,6 +17,18 @@ namespace FlyingDutchmanAirlines_Tests.Stubs
             base.Database.EnsureDeleted();
         }
 
+        public bool WillErrorOnGetFlights { get; set; } = false;
+        public override DbSet<Flight> Flights
+        {
+            get
+            {
+                // Throw database error when prompted
+                if (WillErrorOnGetFlights) throw new Exception("Database Error");
+                return base.Flights;
+            }
+            set => base.Flights = value;
+        }
+
         public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             IEnumerable<EntityEntry> pendingChanges = ChangeTracker.Entries().Where(e => e.State == EntityState.Added);
