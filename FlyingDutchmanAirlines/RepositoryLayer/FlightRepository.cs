@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer;
 using FlyingDutchmanAirlines.DatabaseLayer.Models;
@@ -27,6 +28,17 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
 
             return await _context.Flights.FirstOrDefaultAsync<Flight>(f => f.FlightNumber == flightNumber) 
                    ?? throw new FlightNotFoundException();
+        }
+
+        public virtual Queue<Flight> GetFlights()
+        {
+            Queue<Flight> flights = new();
+            foreach (Flight flight in _context.Flights)
+            {
+                flights.Enqueue(flight);
+            }
+            
+            return flights;
         }
     }
 }
