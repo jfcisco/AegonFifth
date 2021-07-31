@@ -17,7 +17,7 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
             this._context = _context;
         }
 
-        public async Task<Airport> GetAirportByID(int id)
+        public virtual async Task<Airport> GetAirportByID(int id)
         {
             if (!id.IsPositive()) 
             {
