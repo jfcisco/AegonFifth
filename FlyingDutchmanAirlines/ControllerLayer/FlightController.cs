@@ -40,5 +40,22 @@ namespace FlyingDutchmanAirlines.ControllerLayer
                 return StatusCode((int) HttpStatusCode.InternalServerError, "An error occured");
             }
         }
+
+        public async Task<IActionResult> GetFlightByFlightNumber(int flightNumber)
+        {
+            try
+            {
+                FlightView flight = await _flightService.GetFlightByFlightNumber(flightNumber);
+                return StatusCode((int) HttpStatusCode.OK, flight);
+            }
+            catch (FlightNotFoundException)
+            {
+                return StatusCode((int) HttpStatusCode.NotFound, "Flight not found");
+            }
+            catch (ArgumentException)
+            {
+                return StatusCode((int) HttpStatusCode.BadRequest, "Invalid flight number supplied");
+            }
+        }
     }
 }
