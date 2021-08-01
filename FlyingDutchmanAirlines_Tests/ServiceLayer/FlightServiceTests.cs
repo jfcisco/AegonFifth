@@ -33,13 +33,6 @@ namespace FlyingDutchmanAirlines_Tests.ServiceLayer
             Queue<Flight> mockReturn = new(1);
             mockReturn.Enqueue(savedFlight);
 
-            _mockFlightRepository.Setup(repository => repository.GetFlights()).Returns(mockReturn);
-            _mockFlightRepository.Setup(repository => repository.GetFlightByFlightNumber(148)).ReturnsAsync(savedFlight);
-        }
-        
-        [TestMethod]
-        public async Task GetFlights_Success()
-        {
             _mockAirportRepository.Setup(repository => repository.GetAirportByID(31)).ReturnsAsync(new Airport()
             {
                 AirportId = 31,
@@ -53,6 +46,13 @@ namespace FlyingDutchmanAirlines_Tests.ServiceLayer
                 Iata = "UBN"
             });
             
+            _mockFlightRepository.Setup(repository => repository.GetFlights()).Returns(mockReturn);
+            _mockFlightRepository.Setup(repository => repository.GetFlightByFlightNumber(148)).ReturnsAsync(savedFlight);
+        }
+        
+        [TestMethod]
+        public async Task GetFlights_Success()
+        {
             FlightService service = new(_mockFlightRepository.Object, _mockAirportRepository.Object);
 
             await foreach (FlightView flightView in service.GetFlights())
@@ -91,19 +91,6 @@ namespace FlyingDutchmanAirlines_Tests.ServiceLayer
         [TestMethod]
         public async Task GetFlightByFlightNumber_Success()
         {
-            _mockAirportRepository.Setup(repository => repository.GetAirportByID(31)).ReturnsAsync(new Airport()
-            {
-                AirportId = 31,
-                City = "Mexico City",
-                Iata = "MEX"
-            });
-            _mockAirportRepository.Setup(repository => repository.GetAirportByID(92)).ReturnsAsync(new Airport()
-            {
-                AirportId = 92,
-                City = "Ulaanbaatar",
-                Iata = "UBN"
-            });
-
             FlightService service = new(_mockFlightRepository.Object, _mockAirportRepository.Object);
             FlightView flightView = await service.GetFlightByFlightNumber(148);
 
