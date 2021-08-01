@@ -13,10 +13,17 @@ namespace FlyingDutchmanAirlines_Tests.ControllerLayer
     [TestClass]
     public class FlightControllerTests
     {
+        private Mock<FlightService> _mockFlightService;
+        
+        [TestInitialize]
+        public void InitializeTests()
+        {
+            _mockFlightService = new Mock<FlightService>();   
+        }
+        
         [TestMethod]
         public async Task GetFlights_Success()
         {
-            Mock<FlightService> mockFlightService = new();
             List<FlightView> mockFlightViews = new()
             {
                 new FlightView(
@@ -29,9 +36,9 @@ namespace FlyingDutchmanAirlines_Tests.ControllerLayer
                     ("London", "LHR"))
             };
 
-            mockFlightService.Setup(service => service.GetFlights())
+            _mockFlightService.Setup(service => service.GetFlights())
                 .Returns(AsyncEnumerableFlightViewGenerator(mockFlightViews));
-            FlightController controller = new(mockFlightService.Object);
+            FlightController controller = new(_mockFlightService.Object);
             ObjectResult response = await controller.GetFlights() as ObjectResult;
             
             Assert.IsNotNull(response);
@@ -41,7 +48,6 @@ namespace FlyingDutchmanAirlines_Tests.ControllerLayer
             
             // Check that all mockFlightViews are returned by controller
             Assert.IsTrue(flightViews.All(view => mockFlightViews.Contains(view)));
-            
         }
 
 #pragma warning disable 1998
