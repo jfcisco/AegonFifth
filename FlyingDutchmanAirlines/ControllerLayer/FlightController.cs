@@ -33,11 +33,11 @@ namespace FlyingDutchmanAirlines.ControllerLayer
             }
             catch (FlightNotFoundException exception)
             {
-                return StatusCode((int) HttpStatusCode.NotFound);
+                return StatusCode((int) HttpStatusCode.NotFound, "No flights were found in the database");
             }
             catch (Exception exception)
             {
-                return StatusCode((int) HttpStatusCode.InternalServerError);
+                return StatusCode((int) HttpStatusCode.InternalServerError, "An error occured");
             }
         }
     }

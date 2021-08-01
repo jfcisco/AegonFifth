@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.ControllerLayer;
+using FlyingDutchmanAirlines.Exceptions;
 using FlyingDutchmanAirlines.ServiceLayer;
 using FlyingDutchmanAirlines.Views;
 using Microsoft.AspNetCore.Mvc;
@@ -42,12 +45,36 @@ namespace FlyingDutchmanAirlines_Tests.ControllerLayer
             ObjectResult response = await controller.GetFlights() as ObjectResult;
             
             Assert.IsNotNull(response);
-            Assert.AreEqual(200, response.StatusCode);
+            Assert.AreEqual((int) HttpStatusCode.OK, response.StatusCode);
             Queue<FlightView> flightViews = response.Value as Queue<FlightView>;
             Assert.IsNotNull(flightViews);
             
             // Check that all mockFlightViews are returned by controller
             Assert.IsTrue(flightViews.All(view => mockFlightViews.Contains(view)));
+        }
+
+        [TestMethod]
+        public async Task GetFlights_Failure_FlightNotFoundException_404()
+        {
+            _mockFlightService.Setup(service => service.GetFlights()).Throws(new FlightNotFoundException());
+            FlightController controller = new(_mockFlightService.Object);
+
+            ObjectResult response = await controller.GetFlights() as ObjectResult;
+            Assert.IsNotNull(response);
+            Assert.AreEqual((int) HttpStatusCode.NotFound, response.StatusCode);
+            Assert.AreEqual("No flights were found in the database", response.Value);
+        }
+
+        [TestMethod]
+        public async Task GetFlights_Failure_GeneralException_500()
+        {
+            _mockFlightService.Setup(service => service.GetFlights()).Throws(new StackOverflowException());
+            FlightController controller = new(_mockFlightService.Object);
+            
+            ObjectResult response = await controller.GetFlights() as ObjectResult;
+            Assert.IsNotNull(response);
+            Assert.AreEqual((int) HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.AreEqual("An error occured", response.Value);
         }
 
 #pragma warning disable 1998
