@@ -13,13 +13,15 @@ namespace FlyingDutchmanAirlines.ServiceLayer
         private readonly FlightRepository _flightRepo;
         private readonly AirportRepository _airportRepo;
         
+        // Parameter-less constructor for testing purposes
+        public FlightService() {}
         public FlightService(FlightRepository flightRepo, AirportRepository airportRepo)
         {
             _flightRepo = flightRepo;
             _airportRepo = airportRepo;
         }
 
-        public async IAsyncEnumerable<FlightView> GetFlights()
+        public virtual async IAsyncEnumerable<FlightView> GetFlights()
         {
             foreach (Flight flight in _flightRepo.GetFlights())
             {
