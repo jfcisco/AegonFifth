@@ -34,7 +34,7 @@ namespace FlyingDutchmanAirlines.ServiceLayer
             }
         }
 
-        public async Task<FlightView> GetFlightByFlightNumber(int flightNumber)
+        public virtual async Task<FlightView> GetFlightByFlightNumber(int flightNumber)
         {
             try
             {

@@ -77,6 +77,48 @@ namespace FlyingDutchmanAirlines_Tests.ControllerLayer
             Assert.AreEqual("An error occured", response.Value);
         }
 
+        [TestMethod]
+        public async Task GetFlightByFlightNumber_Success()
+        {
+            FlightView mockFlightView = new("0", ("Lagos", "LOS"), ("Marrakesh", "RAK"));
+            _mockFlightService.Setup(service => service.GetFlightByFlightNumber(0)).ReturnsAsync(mockFlightView);
+
+            FlightController controller = new(_mockFlightService.Object);
+            ObjectResult response = await controller.GetFlightByFlightNumber(0) as ObjectResult;
+
+            Assert.IsNotNull(response);
+            Assert.AreEqual((int) HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(mockFlightView, response.Value);
+        }
+
+        [TestMethod]
+        public async Task GetFlightByFlightNumber_Failure_FlightNotFoundException_404()
+        {
+            _mockFlightService.Setup(service => service.GetFlightByFlightNumber(-1))
+                .ThrowsAsync(new FlightNotFoundException());
+
+            FlightController controller = new(_mockFlightService.Object);
+            ObjectResult response = await controller.GetFlightByFlightNumber(-1) as ObjectResult;
+
+            Assert.IsNotNull(response);
+            Assert.AreEqual((int) HttpStatusCode.NotFound, response.StatusCode);
+            Assert.AreEqual("Flight not found", response.Value);
+        }
+
+        [TestMethod]
+        public async Task GetFlightByFlightNumber_Failure_ArgumentException_400()
+        {
+            _mockFlightService.Setup(service => service.GetFlightByFlightNumber(-1))
+                .ThrowsAsync(new ArgumentException());
+
+            FlightController controller = new(_mockFlightService.Object);
+            ObjectResult response = await controller.GetFlightByFlightNumber(-1) as ObjectResult;
+            
+            Assert.IsNotNull(response);
+            Assert.AreEqual((int) HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual("Invalid flight number supplied", response.Value);
+        }
+
 #pragma warning disable 1998
         private async IAsyncEnumerable<FlightView> AsyncEnumerableFlightViewGenerator(IEnumerable<FlightView> flights)
 #pragma warning restore 1998
