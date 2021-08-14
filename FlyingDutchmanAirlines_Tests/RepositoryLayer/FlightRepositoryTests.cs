@@ -62,7 +62,7 @@ namespace FlyingDutchmanAirlines_Tests.RepositoryLayer
         }
 
         [TestMethod]
-        [ExpectedException(typeof(FlightNotFoundException))]
+        [ExpectedException(typeof(ArgumentException))]
         public async Task FlightRepository_GetFlightByFlightNumber_Failure_InvalidFlightNumber()
         {
             await _repository.GetFlightByFlightNumber(-1);

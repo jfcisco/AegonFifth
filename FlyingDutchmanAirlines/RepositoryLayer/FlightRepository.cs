@@ -23,7 +23,7 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
             if (!flightNumber.IsPositive())
             {
                 Console.WriteLine($"Could not find flight in GetFlightByFlightNumber! flightNumber = {flightNumber} ");
-                throw new FlightNotFoundException();
+                throw new ArgumentException();
             }
 
             return await _context.Flights.FirstOrDefaultAsync<Flight>(f => f.FlightNumber == flightNumber) 
