@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlyingDutchmanAirlines.ControllerLayer
 {
+    [Route("{controller}")]
     public class FlightController : Controller
     {
         private readonly FlightService _flightService;
@@ -18,6 +19,7 @@ namespace FlyingDutchmanAirlines.ControllerLayer
             _flightService = flightService;
         }
         
+        [HttpGet]
         public async Task<IActionResult> GetFlights()
         {
             try
@@ -41,6 +43,7 @@ namespace FlyingDutchmanAirlines.ControllerLayer
             }
         }
 
+        [HttpGet("{flightNumber}")]
         public async Task<IActionResult> GetFlightByFlightNumber(int flightNumber)
         {
             try
@@ -52,7 +55,7 @@ namespace FlyingDutchmanAirlines.ControllerLayer
             {
                 return StatusCode((int) HttpStatusCode.NotFound, "Flight not found");
             }
-            catch (ArgumentException)
+            catch (Exception)
             {
                 return StatusCode((int) HttpStatusCode.BadRequest, "Invalid flight number supplied");
             }
