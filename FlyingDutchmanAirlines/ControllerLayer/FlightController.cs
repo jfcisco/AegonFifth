@@ -46,6 +46,10 @@ namespace FlyingDutchmanAirlines.ControllerLayer
         [HttpGet("{flightNumber}")]
         public async Task<IActionResult> GetFlightByFlightNumber(int flightNumber)
         {
+            if (!ModelState.IsValid)
+                return StatusCode((int)HttpStatusCode.BadRequest,
+                    "Invalid flight number supplied");
+
             try
             {
                 FlightView flight = await _flightService.GetFlightByFlightNumber(flightNumber);
