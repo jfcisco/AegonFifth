@@ -12,6 +12,7 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
     {
         private readonly FlyingDutchmanAirlinesContext _context;
 
+<<<<<<< HEAD
         [MethodImpl(MethodImplOptions.NoInlining)]
         public BookingRepository()
         {
@@ -20,6 +21,19 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
                 throw new Exception("This constructor should only be used for testing");
             }
         }
+=======
+        // No inlining to ensure no stack frame magic happens (see Chapter 10)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public BookingRepository() 
+        { 
+            // Executing != Calling when using in the test assembly
+            if (Assembly.GetExecutingAssembly().FullName == Assembly.GetCallingAssembly().FullName)
+            {
+                throw new Exception("This constructor should only be used for testing.");
+            }
+        }
+
+>>>>>>> 02975db65acc9e1f1139970b75ab086e9ee49f65
         public BookingRepository(FlyingDutchmanAirlinesContext _context)
         {
             this._context = _context;

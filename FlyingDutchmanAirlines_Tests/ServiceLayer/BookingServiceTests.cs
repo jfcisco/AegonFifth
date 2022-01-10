@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer;
@@ -6,6 +7,14 @@ using FlyingDutchmanAirlines.Exceptions;
 using FlyingDutchmanAirlines.RepositoryLayer;
 using FlyingDutchmanAirlines.ServiceLayer;
 using FlyingDutchmanAirlines_Tests.Stubs;
+=======
+using System;
+using System.Threading.Tasks;
+using FlyingDutchmanAirlines.DatabaseLayer;
+using FlyingDutchmanAirlines.DatabaseLayer.Models;
+using FlyingDutchmanAirlines.RepositoryLayer;
+using FlyingDutchmanAirlines.ServiceLayer;
+>>>>>>> 02975db65acc9e1f1139970b75ab086e9ee49f65
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -15,6 +24,7 @@ namespace FlyingDutchmanAirlines_Tests.ServiceLayer
     [TestClass]
     public class BookingServiceTests
     {
+<<<<<<< HEAD
         private Mock<BookingRepository> _mockBookingRepository;
         private Mock<CustomerRepository> _mockCustomerRepository;
         private Mock<FlightRepository> _mockFlightRepository;
@@ -25,11 +35,18 @@ namespace FlyingDutchmanAirlines_Tests.ServiceLayer
             _mockBookingRepository = new();
             _mockCustomerRepository = new();
             _mockFlightRepository = new();
+=======
+        [TestInitialize]
+        public void TestInitialize()
+        {   
+            
+>>>>>>> 02975db65acc9e1f1139970b75ab086e9ee49f65
         }
 
         [TestMethod]
         public async Task CreateBooking_Success()
         {
+<<<<<<< HEAD
             _mockBookingRepository.Setup(repository => repository.CreateBooking(0, 0)).Returns(Task.CompletedTask);
             _mockCustomerRepository.Setup(repository => repository.GetCustomerByName("Leo Tolstoy"))
                 .ReturnsAsync(new Customer("Leo Tolstoy"));
@@ -138,6 +155,18 @@ namespace FlyingDutchmanAirlines_Tests.ServiceLayer
             Assert.IsFalse(result);
             Assert.IsNotNull(exception);
             Assert.IsInstanceOfType(exception, typeof(CouldNotAddBookingToDatabaseException));
+=======
+            Mock<BookingRepository> mockBookingRepo = new Mock<BookingRepository>();
+            mockBookingRepo.Setup(repository => repository.CreateBooking(0, 0)).Returns(Task.CompletedTask);
+ 
+            Mock<CustomerRepository> mockCustomerRepo = new Mock<CustomerRepository>();
+            mockCustomerRepo.Setup(repository => repository.GetCustomerByName("Leo Tolstoy")).Returns(Task.FromResult<Customer>(new Customer("Leo Tolstoy")));
+
+            BookingService service = new BookingService(mockBookingRepo.Object, mockCustomerRepo.Object);
+            (bool result, Exception exception) = await service.CreateBooking("Leo Tolstoy", 0);
+            Assert.IsNotNull(service);
+            Assert.IsTrue(result);
+>>>>>>> 02975db65acc9e1f1139970b75ab086e9ee49f65
         }
     }
 }
