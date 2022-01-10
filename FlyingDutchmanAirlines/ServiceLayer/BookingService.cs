@@ -1,23 +1,14 @@
-<<<<<<< HEAD
 ﻿using System;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.DatabaseLayer.Models;
 using FlyingDutchmanAirlines.Exceptions;
 using FlyingDutchmanAirlines.RepositoryLayer;
-=======
-using System;
-using System.Threading.Tasks;
-using FlyingDutchmanAirlines.DatabaseLayer.Models;
-using FlyingDutchmanAirlines.RepositoryLayer;
-using FlyingDutchmanAirlines.Exceptions;
->>>>>>> 02975db65acc9e1f1139970b75ab086e9ee49f65
 
 namespace FlyingDutchmanAirlines.ServiceLayer
 {
     public class BookingService
     {
-<<<<<<< HEAD
         private readonly BookingRepository _bookingRepo;
         private readonly CustomerRepository _customerRepo;
         private readonly FlightRepository _flightRepo;
@@ -27,20 +18,10 @@ namespace FlyingDutchmanAirlines.ServiceLayer
             _bookingRepo = bookingRepo;
             _customerRepo = customerRepo;
             _flightRepo = flightRepo;
-=======
-        private BookingRepository _bookingRepository;
-        private CustomerRepository _customerRepository;
-
-        public BookingService(BookingRepository bookingRepository, CustomerRepository customerRepository) 
-        {
-            _bookingRepository = bookingRepository;
-            _customerRepository = customerRepository;
->>>>>>> 02975db65acc9e1f1139970b75ab086e9ee49f65
         }
 
         public async Task<(bool, Exception)> CreateBooking(string customerName, int flightNumber)
         {
-<<<<<<< HEAD
             // Validate arguments
             if (string.IsNullOrEmpty(customerName) || !flightNumber.IsPositive())
             {
@@ -101,29 +82,6 @@ namespace FlyingDutchmanAirlines.ServiceLayer
         {
             await _customerRepo.CreateCustomer(name);
             return await _customerRepo.GetCustomerByName(name);
-=======
-           try
-           {
-               Customer customer;
-
-               try
-               {
-                   customer = await _customerRepository.GetCustomerByName(customerName);
-               }
-               catch(CustomerNotFoundException)
-               {
-                   await _customerRepository.CreateCustomer(customerName);
-                   return await CreateBooking(customerName, flightNumber);
-               }
-
-               await _bookingRepository.CreateBooking(customer.CustomerId, flightNumber);
-               return (true, null);
-           }
-           catch(Exception exception)
-           {
-               return (false, exception);
-           }
->>>>>>> 02975db65acc9e1f1139970b75ab086e9ee49f65
         }
     }
 }

@@ -13,21 +13,8 @@ namespace FlyingDutchmanAirlines.RepositoryLayer
     public class CustomerRepository
     {
         private readonly FlyingDutchmanAirlinesContext _context;
-<<<<<<< HEAD
         
         public CustomerRepository() {}
-=======
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public CustomerRepository()
-        {
-            if (Assembly.GetExecutingAssembly().FullName == Assembly.GetCallingAssembly().FullName)
-            {
-                throw new Exception("This constructor should only be used for testing.");
-            }
-        }
-
->>>>>>> 02975db65acc9e1f1139970b75ab086e9ee49f65
         public CustomerRepository(FlyingDutchmanAirlinesContext _context)
         {
             this._context = _context;
