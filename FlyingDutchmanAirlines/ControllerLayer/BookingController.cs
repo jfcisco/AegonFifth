@@ -4,11 +4,12 @@ using System.Net;
 using System.Threading.Tasks;
 using FlyingDutchmanAirlines.ControllerLayer.JsonData;
 using FlyingDutchmanAirlines.ServiceLayer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlyingDutchmanAirlines.ControllerLayer
 {
-    [Route("{controller}")]
+    [Route("[controller]")]
     public class BookingController : Controller
     {
         private readonly BookingService _bookingService;
@@ -18,7 +19,14 @@ namespace FlyingDutchmanAirlines.ControllerLayer
             _bookingService = bookingService;
         }
         
+        /// <summary>
+        /// Requests for a flight to be booked
+        /// </summary>
+        /// <response code="201">Successful operation</response>
+        /// <response code="500">Internal error</response>
         [HttpPost("{flightNumber}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateBooking(
             [FromBody] BookingData body,
             int flightNumber)

@@ -14,7 +14,7 @@ namespace FlyingDutchmanAirlines
         private static void InitializeWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls("http://0.0.0.0:8080")
+                // .UseUrls("http://0.0.0.0:8080")
                 .Build()
                 .Run();
     }

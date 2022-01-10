@@ -1,3 +1,4 @@
+using System.IO;
 using FlyingDutchmanAirlines.DatabaseLayer;
 using FlyingDutchmanAirlines.DatabaseLayer.Models;
 using FlyingDutchmanAirlines.RepositoryLayer;
@@ -13,6 +14,11 @@ namespace FlyingDutchmanAirlines
         {
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
+
+            app.UseSwagger();
+            app.UseSwaggerUI(swagger =>
+                swagger.SwaggerEndpoint("swagger/v1/swagger.json", "Flying Dutchman Airlines")
+            );
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -27,6 +33,13 @@ namespace FlyingDutchmanAirlines
             
             services.AddTransient(typeof(FlyingDutchmanAirlinesContext), 
                 typeof(FlyingDutchmanAirlinesContext));
+
+            services.AddSwaggerGen(config =>
+            {
+                // Include XML comments to provide additional descriptions to endpoints
+                string path = Path.Combine(System.AppContext.BaseDirectory, "FlyingDutchmanAirlines.xml");
+                config.IncludeXmlComments(path);
+            });
         }
     }
 }
